@@ -1,3 +1,6 @@
+//"lint": "eslint ." (from 'package.json' scripts)
+//"eslint": "^8.52.0" (from 'package.json' devDep.)
+
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -8,7 +11,7 @@ const Person = require('./models/person')
 app.use(cors())
 app.use(express.json())
 app.use(morgan('tiny'))
-app.use(express.static('../phonebookFrontEnd/build'))
+app.use(express.static('../frontend/build'))
 
 app.get('/', (request, response) => {
   Person.find({}).then(persons => {

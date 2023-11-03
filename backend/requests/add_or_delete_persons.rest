@@ -2,10 +2,17 @@
 
 ###
 
-POST http://localhost:80/api/persons
+//title: String,
+//author: String,
+//url: String,
+//likes: Number
+
+POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "name": "Jou", 
-    "number": "34"
+    "title": "Oooukei", 
+    "author": "Ainou",
+    "url": "juuve/rent",
+    "likes": 2
 }

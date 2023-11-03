@@ -1,86 +1,57 @@
 //"lint": "eslint ." (from 'package.json' scripts)
 //"eslint": "^8.52.0" (from 'package.json' devDep.)
 
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const app = express()
 require('dotenv').config()
-const Person = require('./models/person')
+
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const mongoose = require('mongoose')
 
 app.use(cors())
+//might be the other way around? These are said to be sensitive to order
 app.use(express.json())
-app.use(morgan('tiny'))
-app.use(express.static('../frontend/build'))
 
-app.get('/', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
+mongoose.set('strictQuery',false)
+const blogSchema = new mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number
 })
-
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
-})
-
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } 
-
-  next(error)
-}
-app.use(errorHandler)
-
-app.get('/api/persons/:id', (request, response, next) => {
-  Person.findById(request.params.id).then(person => {
-
-    if(person){
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-
-  })
-
-  .catch(error => next(error))
-
-})
-
-app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
-})
-
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-
-  if (body.name === undefined) {
-    return response.status(400).json({ error: 'name is missing' })
+//not warranted?
+blogSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
   }
-
-  const n_person = new Person({
-    name: body.name,
-    number: body.number
-  })
-
-  n_person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
-
 })
 
+const Blog = mongoose.model('Blog', blogSchema)
 
-const PORT = process.env.PORT
-// 3001 (?)
-// 80 (?)
+const url = process.env.MONGODB_URI
+mongoose.connect(url)
+
+app.get('/api/blogs', (request, response) => {
+  Blog
+    .find({})
+    .then(blogs => {
+      response.json(blogs)
+    })
+})
+
+app.post('/api/blogs', (request, response) => {
+  const blog = new Blog(request.body)
+
+  blog
+    .save()
+    .then(result => {
+      response.status(201).json(result)
+    })
+})
+
+const PORT = 3003
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

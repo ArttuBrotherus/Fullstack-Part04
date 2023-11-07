@@ -11,8 +11,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Blue World", 
-    "author": "All day",
-    "url": "inside/outside",
-    "likes": 1998
+    "title": "A", 
+    "author": "B",
+    "url": "c",
+    "likes": 5
 }

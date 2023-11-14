@@ -1,3 +1,5 @@
+//npm install cross-env
+
 const dummy = (blogs) => {
     return 1
   }

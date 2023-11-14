@@ -8,22 +8,24 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.get('/api/blogs', (request, response) => {
-  getAll().then(blogs => {
-    response.json(blogs)
-  })
+app.get('/api/blogs', async (request, response) => {
+
+  const blogs = await Blog.find({})
+  response.json(blogs)
+
 })
 
-app.post('/api/blogs', (request, response) => {
+app.post('/api/blogs', async (request, response) => {
+
   body = request.body
-  create({
+  nBlog = await create({
     "title": body.title,
     "author": body.author,
     "url": body.url,
     "likes": body.likes
-  }).then(result => {
-      response.status(201).json(result)
-    })
+  })
+  response.status(201).json(nBlog)
+
 })
 
 const PORT = process.env.PORT

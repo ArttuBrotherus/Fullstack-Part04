@@ -37,6 +37,15 @@ test('two blog posts in the json format', async () => {
 
 })
 
+test('identifier property is id', async () => {
+
+  const response = await api.get('/api/blogs')
+  response.body.forEach((blog) => {
+    expect(blog.id).toBeDefined()
+  })
+
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

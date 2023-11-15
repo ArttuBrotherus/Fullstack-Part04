@@ -46,6 +46,22 @@ test('identifier property is id', async () => {
 
 })
 
+test('post request creates a new blog post', async () => {
+
+  const newBlog = {
+    "title": "Analysis on Paulie Gualtieri", 
+    "author": "P.U. Kino",
+    "url": "www/www",
+    "likes": 33
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
+
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

@@ -62,6 +62,26 @@ test('post request creates a new blog post', async () => {
 
 })
 
+test('deleting a post lowers the blog amount + the ID of deleted post is not available', async () => {
+
+  const notesAtStart = await Blog.find({})
+  const idToDelete  = notesAtStart[0].id
+
+  await api
+    .delete(`/api/blogs/${idToDelete}`)
+    .expect(204)
+
+  const blogsInEnd = await Blog.find({})
+  expect(blogsInEnd).toHaveLength(
+    initialBlogs.length - 1
+  )
+
+  const contents = blogsInEnd.map(r => r.id)
+
+  expect(contents).not.toContain(idToDelete)
+
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

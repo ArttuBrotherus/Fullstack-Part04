@@ -35,6 +35,18 @@ app.delete('/api/blogs/:id', async (request, response) => {
 
 })
 
+app.put('/api/blogs/:id', async (request, response) => {
+  const body = request.body
+  updBlg = {
+    "title": body.title,
+    "author": body.author,
+    "url": body.url,
+    "likes": body.likes
+  }
+  await Blog.findByIdAndUpdate(request.params.id, updBlg)
+  response.json(updBlg)
+})
+
 const PORT = process.env.PORT
 
 app.listen(PORT, () => {

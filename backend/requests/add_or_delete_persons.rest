@@ -7,4 +7,12 @@
 //url: String,
 //likes: Number
 
-DELETE http://localhost:3003/api/blogs/6554a867a51ce74671165f0b
+PUT http://localhost:3003/api/blogs/655b3bbcb1fa6283c20a1db5
+Content-Type: application/json
+
+{
+    "title": "NEEEEEEEEEEEEEw",
+    "author": "Castr6th",
+    "url": "5/29",
+    "likes": 174
+}

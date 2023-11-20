@@ -82,6 +82,27 @@ test('deleting a post lowers the blog amount + the ID of deleted post is not ava
 
 })
 
+test('updating changes the blog post + returns the right status code', async () => {
+  const blogsAtStart = await Blog.find({})
+  const oldBlog = blogsAtStart[0]
+  const updId = oldBlog.id
+
+  const updBlg = {
+    "title": "Analysis on Paulie Gualtieri", 
+    "author": "P.U. Kino",
+    "url": "www/www",
+    "likes": 33
+  }
+
+  await api
+    .put(`/api/blogs/${updId}`)
+    .send(updBlg)
+    .expect(200)
+
+  const freshBlog = await Blog.findById(updId)
+  expect(oldBlog).not.toEqual(freshBlog)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

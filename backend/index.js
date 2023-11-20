@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const Blog = require('./models/blog')
-const { getAll, create } = require('./models/blogSer')
+const { getAll, create, deleteBlog } = require('./models/blogSer')
 
 const app = express()
 app.use(express.json())
@@ -25,6 +25,13 @@ app.post('/api/blogs', async (request, response) => {
     "likes": body.likes
   })
   response.status(201).json(nBlog)
+
+})
+
+app.delete('/api/blogs/:id', async (request, response) => {
+
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
 
 })
 

@@ -3,10 +3,34 @@ const express = require('express')
 const cors = require('cors')
 const Blog = require('./models/blog')
 const { getAll, create, deleteBlog } = require('./models/blogSer')
+const bcrypt = require('bcrypt')
+const User = require('./models/user')
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+
+app.get('/api/users', async (request, response) => {
+  const users = await User.find({})
+  response.json(users)
+})
+
+app.post('/api/users', async (request, response) => {
+  const { username, name, password } = request.body
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+
+  const user = new User({
+    username,
+    name,
+    passwordHash
+  })
+
+  const savedUser = await user.save()
+
+  response.status(201).json(savedUser)
+})
 
 app.get('/api/blogs', async (request, response) => {
 

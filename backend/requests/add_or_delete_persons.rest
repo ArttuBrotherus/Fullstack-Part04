@@ -7,12 +7,11 @@
 //url: String,
 //likes: Number
 
-PUT http://localhost:3003/api/blogs/655b3bbcb1fa6283c20a1db5
+POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "title": "NEEEEEEEEEEEEEw",
-    "author": "Castr6th",
-    "url": "5/29",
-    "likes": 174
+    "username": "Bow",
+    "name": "Pappy",
+    "password": "reaction"
 }

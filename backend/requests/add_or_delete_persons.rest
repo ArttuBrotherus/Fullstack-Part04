@@ -7,11 +7,12 @@
 //url: String,
 //likes: Number
 
-POST http://localhost:3003/api/users
+POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "username": "Bow",
-    "name": "Pappy",
-    "password": "reaction"
+    "title": "2",
+    "author": "3",
+    "url": "4",
+    "likes": 5
 }

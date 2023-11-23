@@ -11,7 +11,8 @@ app.use(express.json())
 app.use(cors())
 
 app.get('/api/users', async (request, response) => {
-  const users = await User.find({})
+  const users = await User
+    .find({}).populate('blogs', { title: 1, author: 1, url: 1, likes: 1 })
   response.json(users)
 })
 
@@ -34,20 +35,30 @@ app.post('/api/users', async (request, response) => {
 
 app.get('/api/blogs', async (request, response) => {
 
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 
 })
 
 app.post('/api/blogs', async (request, response) => {
 
+  const users = await User.find({})
+  const user = users[0]
+  const idedUser = await User.findById(user.id)
+
   body = request.body
   nBlog = await create({
     "title": body.title,
     "author": body.author,
     "url": body.url,
-    "likes": body.likes
+    "likes": body.likes,
+    "user": idedUser
   })
+
+  idedUser.blogs = idedUser.blogs.concat(nBlog._id)
+  await idedUser.save()
+
   response.status(201).json(nBlog)
 
 })

@@ -11,7 +11,6 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-
 app.post('/api/login', async (request, response) => {
   const { username, password } = request.body
 
@@ -69,23 +68,34 @@ app.get('/api/blogs', async (request, response) => {
 
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 app.post('/api/blogs', async (request, response) => {
 
-  const users = await User.find({})
-  const user = users[0]
-  const idedUser = await User.findById(user.id)
+  const body = request.body
 
-  body = request.body
-  nBlog = await create({
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+  
+  const nBlog = await create({
     "title": body.title,
     "author": body.author,
     "url": body.url,
     "likes": body.likes,
-    "user": idedUser
+    "user": user._id
   })
 
-  idedUser.blogs = idedUser.blogs.concat(nBlog._id)
-  await idedUser.save()
+  user.blogs = user.blogs.concat(nBlog._id)
+  await user.save()
 
   response.status(201).json(nBlog)
 
